@@ -1,0 +1,23 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Django local database
+db.sqlite3
+
+# Environment variables
+.env
+.env.*
+
+# Editor/IDE files
+.vscode/
+.idea/
+
+# Docker artifacts
+*.pid
+

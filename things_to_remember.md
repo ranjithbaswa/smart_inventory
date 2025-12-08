@@ -25,3 +25,12 @@
 # → Prevents deletion of the parent if child records exist (similar to PROTECT).
 # → Enforced at the database level for stronger safety.
 # → Best for financial, historical, or critical audit-related data (sales, stock, purchases).
+
+
+# in viewsets
+<!-- class CategoryViewSet(viewsets.ModelViewSet):
+    # queryset = Category.objects.all().order_by("id")  //we can define like this 
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.all() // or like this  -->
