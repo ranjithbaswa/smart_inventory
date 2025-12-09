@@ -1,6 +1,7 @@
-from rest_framework import viewsets,status,response
-from inventory.models import PurchaseOrder
+from django.db import transaction
+from inventory.models import PurchaseOrder,Product,StockMovement
 from rest_framework.decorators import action
+from rest_framework import viewsets,status,response
 from inventory.serializers.purchase_order_serializer import PurchaseOrderSerializer
 
 
@@ -40,14 +41,37 @@ class PurchaseOrderViewSet(viewsets.ModelViewSet):
     def receive(self, request, pk=None):
         po = self.get_object()
 
-        if po.status != "PENDING":
+        if po.status == "RECEIVED":
+            return response.Response(
+                {"error" : "This order is already received"},
+                status = status.HTTP_400_BAD_REQUEST
+            )
+        elif po.status != "PENDING":
             return response.Response(
                 {"error": "Only PENDING purchase orders can be marked as RECEIVED."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-        po.status = "RECEIVED"
-        po.save()
+        
+        with transaction.atomic():
+            
+            #loading individual object and saving stock
+            for product_item in po.items.all():
+                product = product_item.product
+                product.quantity_on_hand += product_item.quantity
+                #save product quantity
+                product.save()
+                #creating stock movement record
+                stock_record = StockMovement(
+                    product = product,
+                    movement_type = "IN",
+                    quantity = product_item.quantity,
+                    reference = "testing",
+                    notes = "testing")
+                #save   
+                stock_record.save()
+           
+            po.status = "RECEIVED"
+            po.save()
 
         return response.Response(
             {"message": "Purchase order marked as RECEIVED."},
