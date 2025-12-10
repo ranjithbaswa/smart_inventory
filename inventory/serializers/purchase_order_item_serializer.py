@@ -6,7 +6,7 @@ class PurchaseOrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = PurchaseOrderItem
         fields = ["id", "product", "quantity", "cost_price"]
-        read_only_fields = ["id"]
+        read_only_fields = ["id","product_name"]
 
     # quantity must be > 0
     def validate_quantity(self, value):
