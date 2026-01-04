@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 from rest_framework import routers
 from inventory.views import category_viewset,product_viewset,supplier_viewset,purchase_order_viewset
+from orders.views import customorder_viewset
 
 
 router = routers.DefaultRouter()
@@ -33,6 +34,9 @@ router.register(r"suppliers" , supplier_viewset.SupplierViewSet , basename="supp
 
 #Purchase orders
 router.register(r"purchase-orders", purchase_order_viewset.PurchaseOrderViewSet, basename="purchase-order")
+
+#custome orders
+router.register(r"custom-orders" , customorder_viewset.CustomOrderViewset , basename="custom-orders")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

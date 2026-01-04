@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from inventory.models import PurchaseOrderItem
+from orders.models import CustomerOrderItem, CustomerOrder
+from inventory.models import Product
+from django.db import transaction
 
-class PurchaseOrderItemSerializer(serializers.ModelSerializer):
-
+class CustomOrderItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PurchaseOrderItem
-        fields = ["id", "product", "quantity", "cost_price"]
-        read_only_fields = ["id","product_name"]
+        model = CustomerOrderItem
+        fields = ["id", "product", "quantity", "selling_price"]
+        read_only_fields = ["id"]
 
     # quantity must be > 0
     def validate_quantity(self, value):
@@ -15,7 +16,7 @@ class PurchaseOrderItemSerializer(serializers.ModelSerializer):
         return value
 
     # cost_price must be > 0
-    def validate_selling_price(self, value):
+    def validate_cost_price(self, value):
         if value <= 0:
             raise serializers.ValidationError("Cost price must be greater than 0.")
         return value
